@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">group project ict602</string>
+    <string name="todo">TODO</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete">delete</string>
+    <string name="products" />
+    <string name="home" />
+    <string name="inventory" />
+    <string name="enter_data">Enter data</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_quantity">Enter quantity</string>
+    <string name="select_expired_date">Expired date</string>
+    <string name="select_category">Select category</string>
+    <string name="add_button_description">Add category</string>
+    <string-array name="categories_array">
+        <item>foods</item>
+        <item>drinks</item>
+        <item>snacks</item>
+        <item>candy</item>
+    </string-array>
+</resources>
