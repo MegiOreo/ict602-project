@@ -33,6 +33,21 @@
             android:hint="@string/enter_quantity"
             android:inputType="number" />
 
+        <EditText
+            android:id="@+id/editTextBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_barcode_or_scan"
+            android:inputType="text" />
+
+        <!-- Button to Scan Barcode -->
+        <Button
+            android:id="@+id/btnScanBarcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/baseline_photo_camera_24" />
+
+
         <!-- DatePicker for Expired Date -->
         <TextView
             android:layout_width="wrap_content"
