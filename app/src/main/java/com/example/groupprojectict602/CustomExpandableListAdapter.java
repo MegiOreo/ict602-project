@@ -75,11 +75,14 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         TextView textViewQuantity = convertView.findViewById(R.id.quantityTextView);
         TextView textViewExpired = convertView.findViewById(R.id.expiryDateTextView);
         TextView textViewDateAdded = convertView.findViewById(R.id.dateAddedTextView);
+        TextView textViewBarcode = convertView.findViewById(R.id.barcodeTextView);
 
         Item currentItem = items.get(groupPosition);
         textViewQuantity.setText("Quantity: " + currentItem.getQuantity());
         textViewExpired.setText("Expired: " + currentItem.getExpiryDate());
         textViewDateAdded.setText("Date Added: " + currentItem.getDateAdded());
+        textViewBarcode.setText("Barcode: " + currentItem.getBarcode());
+
 
         return convertView;
     }
