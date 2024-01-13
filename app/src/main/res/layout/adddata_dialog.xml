@@ -37,7 +37,7 @@
             android:id="@+id/editTextBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_barcode_or_scan"
+            android:hint="@string/enter_barcode"
             android:inputType="text" />
 
         <!-- Button to Scan Barcode -->

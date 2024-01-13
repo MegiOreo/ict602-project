@@ -13,6 +13,10 @@
     <string name="select_expired_date">Expired date</string>
     <string name="select_category">Select category</string>
     <string name="add_button_description">Add category</string>
+    <string name="search_with_picture">Search with picture</string>
+    <string name="search_hint">Search...</string>
+    <string name="search" />
+    <string name="enter_barcode">Scan barcode</string>
     <string-array name="categories_array">
         <item>foods</item>
         <item>drinks</item>

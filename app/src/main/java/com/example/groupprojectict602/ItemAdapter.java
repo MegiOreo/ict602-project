@@ -6,18 +6,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.groupprojectict602.Item;
-import com.example.groupprojectict602.R;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
-    private final List<Item> itemList;
+    private List<Item> itemList;
 
-    public ItemAdapter(List<Item> itemList) {
+    public ItemAdapter(FragmentActivity searchFragment, List<Item> itemList) {
         this.itemList = itemList;
     }
 
@@ -47,7 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.textViewName);
-            //textViewCategory = itemView.findViewById(R.id.textViewCategory);
+            textViewCategory = itemView.findViewById(R.id.textViewCategory);
             // Initialize other TextViews as needed
         }
 
@@ -57,4 +56,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             // Set other TextViews with item details as needed
         }
     }
+
+    public void searchDataList(ArrayList<Item> searchList){
+        itemList = searchList;
+        notifyDataSetChanged();
+    }
+
 }

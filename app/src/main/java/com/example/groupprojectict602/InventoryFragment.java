@@ -1,5 +1,6 @@
 package com.example.groupprojectict602;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,30 +29,18 @@ public class InventoryFragment extends Fragment {
 
     private Spinner spinnerCategory;
     private DatabaseReference databaseReference;
+    private ExpandableListView expandableListView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inventory, container, false);
 
         expandableListView = view.findViewById(R.id.expandableListView);
-
-        // Initialize Firebase Database Reference
         databaseReference = FirebaseDatabase.getInstance().getReference().child("items");
-
-        // Initialize views
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
 
-        // Setup Spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.categories_array,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(adapter);
+        fetchCategoriesAndPopulateSpinner();
 
-        // Listen to Spinner selection changes
         spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -63,14 +53,51 @@ public class InventoryFragment extends Fragment {
                 // Do nothing
             }
         });
+        //start edit
+
+        // Set OnItemLongClickListener for the ExpandableListView
+//        expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                showEditDeleteDialog(position);
+//                return true;
+//            }
+//        });
 
         return view;
     }
 
-    private ExpandableListView expandableListView;
+    private void fetchCategoriesAndPopulateSpinner() {
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference("categories");
 
-    // Inside fetchItemsForCategory method in InventoryFragment
-    // Inside your InventoryFragment class
+        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> categoryNames = new ArrayList<>();
+
+                for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                    String categoryName = categorySnapshot.child("name").getValue(String.class);
+                    if (categoryName != null) {
+                        categoryNames.add(categoryName);
+                    }
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        categoryNames
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCategory.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("InventoryFragment", "Failed to fetch categories: " + databaseError.getMessage());
+            }
+        });
+    }
+
     private void fetchItemsForCategory(String category) {
         databaseReference.orderByChild("category").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,10 +110,7 @@ public class InventoryFragment extends Fragment {
                     }
                 }
 
-                // Create an instance of the custom ExpandableListAdapter
                 CustomExpandableListAdapter customExpandableListAdapter = new CustomExpandableListAdapter(getContext(), items);
-
-                // Set the adapter to the ExpandableListView
                 expandableListView.setAdapter(customExpandableListAdapter);
             }
 
@@ -97,31 +121,31 @@ public class InventoryFragment extends Fragment {
         });
     }
 
-
-
-//    private void fetchItemsForCategory(String category) {
-//        databaseReference.orderByChild("category").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                List<Item> items = new ArrayList<>();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Item item = snapshot.getValue(Item.class); // Use your updated Item class constructor here
-//                    if (item != null) {
-//                        items.add(item);
-//                        // Log the item details for debugging
-//                        Log.d("ItemDetails", "Name: " + item.getName() + ", Category: " + item.getCategory());
-//                    }
-//                }
+//    private void showEditDeleteDialog(final int position) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        LayoutInflater inflater = getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.dialog_edit_delete, null);
+//        builder.setView(dialogView);
 //
-//                ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(items);
-//                expandableListView.setAdapter(expandableListAdapter);
-//                // TODO: Display the items in your expandable ListView
+//        Button btnEdit = dialogView.findViewById(R.id.btnEdit);
+//        Button btnDelete = dialogView.findViewById(R.id.btnDelete);
+//
+//        final AlertDialog dialog = builder.create();
+//        dialog.show();
+//
+//        btnEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(), "Edit item at position: " + position, Toast.LENGTH_SHORT).show();
+//                dialog.dismiss();
 //            }
+//        });
 //
-//
+//        btnDelete.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                // Handle errors here
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(), "Delete item at position: " + position, Toast.LENGTH_SHORT).show();
+//                dialog.dismiss();
 //            }
 //        });
 //    }
