@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FAFAFA"
-                android:divider="@android:color/darker_gray"
+                android:divider="#E7E3FF"
                 android:dividerHeight="1dp" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
