@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,26 +33,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
+import java.util.UUID;
 
-public class ProductsFragment extends Fragment {
+public class CategoryFragment extends Fragment {
 
     private DatabaseReference itemsReference;
     private TextView categoryCountTextView;
+    private ListView categoryListView;
     private ArrayAdapter<String> adapter;
-    private final Map<String, Integer> categoryCounts = new HashMap<>();
+    private Map<String, Integer> categoryCounts = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_products, container, false);
+        View view = inflater.inflate(R.layout.fragment_category, container, false);
 
         DatabaseReference categoriesReference = FirebaseDatabase.getInstance().getReference().child("categories");
 
         categoryCountTextView = view.findViewById(R.id.categoryCount);
-        ListView categoryListView = view.findViewById(R.id.categoryListView);
+        categoryListView = view.findViewById(R.id.categoryListView);
 
-        adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
         categoryListView.setAdapter(adapter);
 
         registerForContextMenu(categoryListView);
@@ -60,7 +62,7 @@ public class ProductsFragment extends Fragment {
         categoriesReference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     adapter.clear(); // Clear previous categories
 
@@ -80,7 +82,7 @@ public class ProductsFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(getActivity(), "Error fetching categories!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -101,8 +103,7 @@ public class ProductsFragment extends Fragment {
                 String categoryName = input.getText().toString().trim();
 
                 // Check if the category name is not empty
-                //if (!TextUtils.isEmpty(categoryName)) {
-                if (!TextUtils.isEmpty(categoryName)){
+                if (!TextUtils.isEmpty(categoryName)) {
                     // Check if the category already exists
                     categoriesReference.orderByChild("name").equalTo(categoryName).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -140,6 +141,11 @@ public class ProductsFragment extends Fragment {
             builder.show();
         });
 
+        Button deleteAllButton = view.findViewById(R.id.deleteAllCategoriesButton);
+        deleteAllButton.setOnClickListener(v -> {;
+            deleteAllCategoriesAndItems();
+        });
+
         return view;
     }
 
@@ -154,7 +160,7 @@ public class ProductsFragment extends Fragment {
     private boolean isCategoryUpdated = false;
 
     private void editCategoryName(String currentName) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Edit Category Name");
 
         // Set up the input
@@ -248,7 +254,7 @@ public class ProductsFragment extends Fragment {
 
     public void deleteDataFunction(String selectedCategory) {
         // Show a confirmation dialog before deleting the category
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Confirm Deletion");
         builder.setMessage("Are you sure you want to delete the category: " + selectedCategory + "? This will also delete items within the selected category and cannot be undone");
 
@@ -256,60 +262,60 @@ public class ProductsFragment extends Fragment {
         builder.setPositiveButton("Delete", (dialog, which) -> {
             DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
             DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
-            DatabaseReference scannedItemsRef = FirebaseDatabase.getInstance().getReference().child("scannedItems"); // Assuming this is where you store the items with barcodes
+            //DatabaseReference scannedItemsRef = FirebaseDatabase.getInstance().getReference().child("scannedItems"); // Assuming this is where you store the items with barcodes
 
             categoriesRef.orderByChild("name").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
-                            categorySnapshot.getRef().removeValue()
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getActivity(), "Category deleted successfully!", Toast.LENGTH_SHORT).show();
+                    //if (dataSnapshot.exists()) {
+                    for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                        categorySnapshot.getRef().removeValue()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getActivity(), "Category deleted successfully!", Toast.LENGTH_SHORT).show();
 
-                                        // Delete corresponding items from 'items' node
-                                        itemsRef.orderByChild("category").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
-                                                if (itemSnapshot.exists()) {
-                                                    for (DataSnapshot item : itemSnapshot.getChildren()) {
-                                                        String itemBarcode = item.child("barcode").getValue(String.class);
+                                    // Delete corresponding items from 'items' node
+                                    itemsRef.orderByChild("category").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
+                                            if (itemSnapshot.exists()) {
+                                                for (DataSnapshot item : itemSnapshot.getChildren()) {
+                                                    String itemBarcode = item.child("barcode").getValue(String.class);
 
-                                                        // Remove barcode from 'scannedItems'
-                                                        assert itemBarcode != null;
-                                                        scannedItemsRef.child(itemBarcode).removeValue()
-                                                                .addOnSuccessListener(aVoid1 -> {
-                                                                    Toast.makeText(getActivity(), "Barcode removed from scannedItems!", Toast.LENGTH_SHORT).show();
-                                                                })
-                                                                .addOnFailureListener(e -> {
-                                                                    Toast.makeText(getActivity(), "Failed to remove barcode from scannedItems!", Toast.LENGTH_SHORT).show();
-                                                                });
+                                                    // Remove barcode from 'scannedItems'
+//                                                    scannedItemsRef.child(itemBarcode).removeValue()
+//                                                            .addOnSuccessListener(aVoid1 -> {
+//                                                                Toast.makeText(getActivity(), "Barcode removed from scannedItems!", Toast.LENGTH_SHORT).show();
+//                                                            })
+//                                                            .addOnFailureListener(e -> {
+//                                                                Toast.makeText(getActivity(), "Failed to remove barcode from scannedItems!", Toast.LENGTH_SHORT).show();
+//                                                            });
 
-                                                        // Delete the item
-                                                        item.getRef().removeValue()
-                                                                .addOnSuccessListener(aVoid2 -> {
-                                                                    Toast.makeText(getActivity(), "Item deleted successfully!", Toast.LENGTH_SHORT).show();
-                                                                })
-                                                                .addOnFailureListener(e -> {
-                                                                    Toast.makeText(getActivity(), "Failed to delete item!", Toast.LENGTH_SHORT).show();
-                                                                });
-                                                    }
+                                                    // Delete the item
+                                                    item.getRef().removeValue()
+                                                            .addOnSuccessListener(aVoid2 -> {
+                                                                Toast.makeText(getActivity(), "Item deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                            })
+                                                            .addOnFailureListener(e -> {
+                                                                Toast.makeText(getActivity(), "Failed to delete item!", Toast.LENGTH_SHORT).show();
+                                                            });
                                                 }
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                Toast.makeText(getActivity(), "Error deleting items!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(getActivity(), "Failed to delete category!", Toast.LENGTH_SHORT).show();
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            Toast.makeText(getActivity(), "Error deleting items!", Toast.LENGTH_SHORT).show();
+                                        }
                                     });
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Category not found!", Toast.LENGTH_SHORT).show();
+
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(getActivity(), "Failed to delete category!", Toast.LENGTH_SHORT).show();
+                                });
                     }
+                    // } else {
+                    //     Toast.makeText(getActivity(), "Category not found!", Toast.LENGTH_SHORT).show();
+                    //}
                 }
 
                 @Override
@@ -330,18 +336,186 @@ public class ProductsFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        assert info != null;
         String selectedCategory = adapter.getItem(info.position);
 
-        if (Objects.equals(item.getTitle(), "Edit")) {
+        if (item.getTitle().equals("Edit")) {
             // Call the editCategoryName function
             editCategoryName(selectedCategory);
-        } else if (Objects.equals(item.getTitle(), "Delete")) {
+        } else if (item.getTitle().equals("Delete")) {
             deleteDataFunction(selectedCategory);
         }
 
         return true;
     }
+
+//    private void deleteAllCategories() {
+//        // First confirmation dialog
+//        AlertDialog.Builder firstConfirmationBuilder = new AlertDialog.Builder(requireContext());
+//        firstConfirmationBuilder.setTitle("Confirmation");
+//        firstConfirmationBuilder.setMessage("This will delete all categories. Proceed?");
+//
+//        firstConfirmationBuilder.setPositiveButton("Yes", (firstDialog, firstWhich) -> {
+//            // Second confirmation dialog
+//            AlertDialog.Builder secondConfirmationBuilder = new AlertDialog.Builder(requireContext());
+//            secondConfirmationBuilder.setTitle("Confirm Deletion");
+//            secondConfirmationBuilder.setMessage("Are you sure you want to proceed? This cannot be undone.");
+//
+//            secondConfirmationBuilder.setPositiveButton("Delete", (secondDialog, secondWhich) -> {
+//                DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
+//
+//                categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if (dataSnapshot.exists()) {
+//                            for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+//                                // Delete all categories
+//                                categorySnapshot.getRef().removeValue();
+//                            }
+//                            Toast.makeText(requireContext(), "All categories deleted successfully!", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(requireContext(), "No categories found", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Toast.makeText(requireContext(), "Error deleting categories!", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            });
+//
+//            secondConfirmationBuilder.setNegativeButton("Cancel", (secondDialog, secondWhich) -> secondDialog.dismiss());
+//
+//            secondConfirmationBuilder.show();
+//
+//            firstDialog.dismiss();
+//        });
+//
+//        firstConfirmationBuilder.setNegativeButton("Cancel", (firstDialog, firstWhich) -> firstDialog.dismiss());
+//
+//        firstConfirmationBuilder.show();
+//    }
+
+    // ...
+
+    //start edit
+    private void deleteAllCategoriesAndItems() {
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
+
+        // Check if there are categories
+        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Generate a random text for confirmation
+                    String randomText = generateRandomText();
+
+                    // Display the random text to the user
+                    showRandomTextDialog(randomText);
+                } else {
+                    // No categories found, show a message
+                    Toast.makeText(requireContext(), "No categories found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(requireContext(), "Error checking categories!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private String generateRandomText() {
+        // Implement your logic to generate a random text (e.g., using UUID)
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    private void showRandomTextDialog(String randomText) {
+        // Show a dialog with the generated random text
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Random Text for Confirmation");
+        builder.setMessage("To proceed with deletion, please enter the following random text:\n\n" + randomText);
+
+        // Set up the input
+        final EditText inputRandomText = new EditText(requireContext());
+        inputRandomText.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(inputRandomText);
+
+        // Set up the buttons
+        builder.setPositiveButton("Proceed", (dialog, which) -> {
+            // Get the text entered by the user
+            String enteredText = inputRandomText.getText().toString().trim();
+
+            // Check if the entered text matches the generated random text
+            if (enteredText.equals(randomText)) {
+                // User entered correct text, proceed with deletion
+                performDeletion();
+            } else {
+                // Incorrect text entered, show a message
+                Toast.makeText(requireContext(), "Incorrect random text. Deletion canceled.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
+    }
+
+    private void performDeletion() {
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
+        DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
+
+        // Delete all categories
+        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                        String categoryName = categorySnapshot.child("name").getValue(String.class);
+
+                        // Delete corresponding items from 'items' node
+                        itemsRef.orderByChild("category").equalTo(categoryName).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
+                                if (itemSnapshot.exists()) {
+                                    for (DataSnapshot item : itemSnapshot.getChildren()) {
+                                        // Delete the item
+                                        item.getRef().removeValue()
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Toast.makeText(requireContext(), "Item deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(requireContext(), "Failed to delete item!", Toast.LENGTH_SHORT).show();
+                                                });
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(requireContext(), "Error deleting items!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        // Delete the category
+                        categorySnapshot.getRef().removeValue();
+                    }
+                    Toast.makeText(requireContext(), "All categories and corresponding items deleted successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "No categories found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(requireContext(), "Error deleting categories!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
 
 
 }

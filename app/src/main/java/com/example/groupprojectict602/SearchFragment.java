@@ -1,6 +1,5 @@
 package com.example.groupprojectict602;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,14 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,6 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
         return rootView;
     }
 
@@ -91,14 +91,14 @@ public class SearchFragment extends Fragment {
         if (itemList != null) {
             ArrayList<Item> searchList = new ArrayList<>();
             for (Item item : itemList) {
-                if (item.getBarcode() != null && item.getBarcode().toLowerCase().contains(text.toLowerCase())) {
+                if ((item.getBarcode() != null && item.getBarcode().toLowerCase().contains(text.toLowerCase())) ||
+                        (item.getName() != null && item.getName().toLowerCase().contains(text.toLowerCase()))) {
                     searchList.add(item);
                 }
             }
             adapter.searchDataList(searchList);
         }
     }
-
 
     @Override
     public void onDestroy() {

@@ -48,6 +48,12 @@
             android:layout_height="wrap_content"
             android:text="Category: " />
 
+        <TextView
+            android:id="@+id/textViewBarcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Barcode: " />
+
     </LinearLayout>
 
 </LinearLayout>

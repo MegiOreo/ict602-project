@@ -5,8 +5,34 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/lavender"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
+
+    <!-- Top Bar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary">
+
+            <!-- Your title if needed -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find items"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:layout_gravity="start" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- TextView below the Toolbar -->
 
     <androidx.appcompat.widget.SearchView
         android:layout_width="match_parent"
@@ -16,7 +42,7 @@
         android:layout_marginEnd="12dp"
         android:id="@+id/search"
         app:iconifiedByDefault="false"
-        app:queryHint="Search items with barcode..."
+        app:queryHint="Search items..."
         android:focusable="false"
         app:closeIcon="@drawable/baseline_clear_24"/>
 
@@ -26,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Scan Barcode"
-        android:layout_marginTop="16dp"/> -->
+        android:layout_marginTop="16dp"/>-->
 
     <!-- Results Section -->
     <androidx.recyclerview.widget.RecyclerView

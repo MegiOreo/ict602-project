@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_item_developer1"
+            android:title="Developer 1" />
+        <item
+            android:id="@+id/nav_item_developer2"
+            android:title="Developer 2" />
+        <item
+            android:id="@+id/nav_item_developer3"
+            android:title="Developer 3" />
+        <item
+            android:id="@+id/nav_item_developer4"
+            android:title="Developer 4" />
+
+                <item
+        android:id="@+id/nav_item_developers"
+        android:title="Developers"
+        android:icon="@drawable/baseline_person_2_24"/>
+
+    <item
+        android:id="@+id/nav_item_info"
+        android:title="Info"
+        android:icon="@drawable/baseline_info_24"/>
+    </group>-->
+    <item
+        android:clickable="false"
+        android:focusable="false"
+        android:title="Developed by" />
+
+    <item
+        android:id="@+id/nav_item_developer1"
+        android:clickable="false"
+        android:focusable="false"
+        android:title="Hakimi" />
+    <item
+        android:id="@+id/nav_item_developer2"
+        android:clickable="false"
+        android:focusable="false"
+        android:title="Fabian" />
+    <item
+        android:id="@+id/nav_item_developer3"
+        android:clickable="false"
+        android:focusable="false"
+        android:title="Alif" />
+    <item
+        android:id="@+id/nav_item_developer4"
+        android:clickable="false"
+        android:focusable="false"
+        android:title="Shafiq" />
+
+
+    <!--<item
+        android:id="@+id/nav_item_copyright"
+        android:title="Copyright Statement"
+        android:icon="@drawable/baseline_lock_24"/>
+
+
+    <item
+        android:id="@+id/nav_item_website"
+        android:title="Visit Website" />-->
+
+</menu>
+
