@@ -43,9 +43,10 @@
         <!-- Button to Scan Barcode -->
         <Button
             android:id="@+id/btnScanBarcode"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/baseline_photo_camera_24" />
+            android:drawableLeft="@drawable/baseline_photo_camera_24"
+            android:drawableTint="#FFFFFF" />
 
 
         <!-- DatePicker for Expired Date -->
