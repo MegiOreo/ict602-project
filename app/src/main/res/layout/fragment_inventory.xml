@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#E7E3FF">
 
     <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -50,8 +51,9 @@
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FAFAFA"
         android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="1dp" />
 
     <!-- RecyclerView to display items based on category
     <androidx.recyclerview.widget.RecyclerView
