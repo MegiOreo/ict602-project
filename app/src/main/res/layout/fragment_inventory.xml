@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#E7E3FF">
 
     <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -33,25 +34,37 @@
         android:id="@+id/deleteAllButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete All items"
+        android:text="Delete All"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp" />
-
 
     <!-- Dropdown to select category -->
     <Spinner
         android:id="@+id/spinnerCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
 
-    <ExpandableListView
-        android:id="@+id/expandableListView"
+    <!-- ExpandableListView with padding -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FAFAFA"
+            android:divider="#E7E3FF"
+            android:dividerHeight="1dp" />
+
+    </LinearLayout>
 
     <!-- RecyclerView to display items based on category
     <androidx.recyclerview.widget.RecyclerView
@@ -60,6 +73,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" /> -->
 
 </LinearLayout>
