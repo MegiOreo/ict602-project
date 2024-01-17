@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lavender"
-    tools:context=".ProductsFragment">
+    tools:context=".CategoryFragment">
 
     <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Products"
+                android:text="Categories"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:layout_gravity="" />
@@ -44,14 +44,28 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- TextView below the Toolbar -->
-    <TextView
-        android:id="@+id/categoryCount"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
-        android:text="TextView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:padding="16dp" />
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/categoryCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="0 Category Available"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <!-- Delete Button -->
+        <Button
+            android:id="@+id/deleteAllCategoriesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Delete All"
+            android:onClick="onDeleteAllCategoriesButtonClick" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/categoryListView"
