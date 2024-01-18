@@ -36,19 +36,24 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CategoryFragment extends Fragment {
-
+    private DatabaseReference categoriesReference;
     private DatabaseReference itemsReference;
     private TextView categoryCountTextView;
     private ListView categoryListView;
     private ArrayAdapter<String> adapter;
     private Map<String, Integer> categoryCounts = new HashMap<>();
 
+    public CategoryFragment() {
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
 
-        DatabaseReference categoriesReference = FirebaseDatabase.getInstance().getReference().child("categories");
+        //DatabaseReference categoriesReference = FirebaseDatabase.getInstance().getReference().child("categories");
+        categoriesReference = FirebaseDatabase.getInstance().getReference().child("categories");
+
 
         categoryCountTextView = view.findViewById(R.id.categoryCount);
         categoryListView = view.findViewById(R.id.categoryListView);
@@ -174,60 +179,78 @@ public class CategoryFragment extends Fragment {
             String newName = input.getText().toString().trim();
 
             if (!TextUtils.isEmpty(newName) && !newName.equals(currentName)) {
-                // Fetch the category reference from Firebase
-                DatabaseReference categoryRef = FirebaseDatabase.getInstance().getReference().child("categories");
-                categoryRef.orderByChild("name").equalTo(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
+                // Check if the new name already exists
+                categoriesReference.orderByChild("name").equalTo(newName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
-                                // Update the category name
-                                categorySnapshot.getRef().child("name").setValue(newName)
-                                        .addOnSuccessListener(aVoid -> {
-                                            isCategoryUpdated = true;
-                                            Toast.makeText(getActivity(), "Category updated successfully!", Toast.LENGTH_SHORT).show();
+                            // Category with the same name already exists
+                            Toast.makeText(getActivity(), "Category already exists!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Fetch the category reference from Firebase
+                            //DatabaseReference categoryRef = FirebaseDatabase.getInstance().getReference().child("categories");
+                            DatabaseReference categoryRef = categoriesReference;
 
-                                            // Update items node with the new category name
-                                            DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
-                                            itemsRef.orderByChild("category").equalTo(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
-                                                    if (itemSnapshot.exists()) {
-                                                        for (DataSnapshot item : itemSnapshot.getChildren()) {
-                                                            item.getRef().child("category").setValue(newName)
-                                                                    .addOnSuccessListener(aVoid1 -> {
-                                                                        if (isCategoryUpdated) {
-                                                                            Toast.makeText(getActivity(), "Item updated with new category!", Toast.LENGTH_SHORT).show();
-                                                                            isCategoryUpdated = false; // Reset the flag to false after displaying the toast
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(e -> {
-                                                                        Toast.makeText(getActivity(), "Failed to update items with new category!", Toast.LENGTH_SHORT).show();
+                            categoryRef.orderByChild("name").equalTo(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                                            // Update the category name
+                                            categorySnapshot.getRef().child("name").setValue(newName)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        isCategoryUpdated = true;
+                                                        Toast.makeText(getActivity(), "Category updated successfully!", Toast.LENGTH_SHORT).show();
 
-                                                                    });
-                                                        }
-                                                    }
-                                                }
+                                                        // Update items node with the new category name
+                                                        DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
+                                                        itemsRef.orderByChild("category").equalTo(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot itemSnapshot) {
+                                                                if (itemSnapshot.exists()) {
+                                                                    for (DataSnapshot item : itemSnapshot.getChildren()) {
+                                                                        item.getRef().child("category").setValue(newName)
+                                                                                .addOnSuccessListener(aVoid1 -> {
+                                                                                    if (isCategoryUpdated) {
+                                                                                        Toast.makeText(getActivity(), "Item updated with new category!", Toast.LENGTH_SHORT).show();
+                                                                                        isCategoryUpdated = false; // Reset the flag to false after displaying the toast
+                                                                                    }
+                                                                                })
+                                                                                .addOnFailureListener(e -> {
+                                                                                    Toast.makeText(getActivity(), "Failed to update items with new category!", Toast.LENGTH_SHORT).show();
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                    Toast.makeText(getActivity(), "Error updating items!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                                                                });
+                                                                    }
+                                                                }
+                                                            }
 
-                                            dialog.dismiss(); // Close the dialog after successful update
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            isCategoryUpdated = false;
-                                            Toast.makeText(getActivity(), "Failed to update category!", Toast.LENGTH_SHORT).show();
-                                        });
-                            }
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                                Toast.makeText(getActivity(), "Error updating items!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+
+                                                        dialog.dismiss(); // Close the dialog after successful update
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        isCategoryUpdated = false;
+                                                        Toast.makeText(getActivity(), "Failed to update category!", Toast.LENGTH_SHORT).show();
+                                                    });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(getActivity(), "Error updating category!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error updating category!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error checking category!", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -252,6 +275,7 @@ public class CategoryFragment extends Fragment {
     }
 
 
+
     public void deleteDataFunction(String selectedCategory) {
         // Show a confirmation dialog before deleting the category
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -262,8 +286,6 @@ public class CategoryFragment extends Fragment {
         builder.setPositiveButton("Delete", (dialog, which) -> {
             DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
             DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
-            //DatabaseReference scannedItemsRef = FirebaseDatabase.getInstance().getReference().child("scannedItems"); // Assuming this is where you store the items with barcodes
-
             categoriesRef.orderByChild("name").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -280,15 +302,6 @@ public class CategoryFragment extends Fragment {
                                             if (itemSnapshot.exists()) {
                                                 for (DataSnapshot item : itemSnapshot.getChildren()) {
                                                     String itemBarcode = item.child("barcode").getValue(String.class);
-
-                                                    // Remove barcode from 'scannedItems'
-//                                                    scannedItemsRef.child(itemBarcode).removeValue()
-//                                                            .addOnSuccessListener(aVoid1 -> {
-//                                                                Toast.makeText(getActivity(), "Barcode removed from scannedItems!", Toast.LENGTH_SHORT).show();
-//                                                            })
-//                                                            .addOnFailureListener(e -> {
-//                                                                Toast.makeText(getActivity(), "Failed to remove barcode from scannedItems!", Toast.LENGTH_SHORT).show();
-//                                                            });
 
                                                     // Delete the item
                                                     item.getRef().removeValue()
@@ -313,9 +326,6 @@ public class CategoryFragment extends Fragment {
                                     Toast.makeText(getActivity(), "Failed to delete category!", Toast.LENGTH_SHORT).show();
                                 });
                     }
-                    // } else {
-                    //     Toast.makeText(getActivity(), "Category not found!", Toast.LENGTH_SHORT).show();
-                    //}
                 }
 
                 @Override
@@ -347,58 +357,6 @@ public class CategoryFragment extends Fragment {
 
         return true;
     }
-
-//    private void deleteAllCategories() {
-//        // First confirmation dialog
-//        AlertDialog.Builder firstConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//        firstConfirmationBuilder.setTitle("Confirmation");
-//        firstConfirmationBuilder.setMessage("This will delete all categories. Proceed?");
-//
-//        firstConfirmationBuilder.setPositiveButton("Yes", (firstDialog, firstWhich) -> {
-//            // Second confirmation dialog
-//            AlertDialog.Builder secondConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//            secondConfirmationBuilder.setTitle("Confirm Deletion");
-//            secondConfirmationBuilder.setMessage("Are you sure you want to proceed? This cannot be undone.");
-//
-//            secondConfirmationBuilder.setPositiveButton("Delete", (secondDialog, secondWhich) -> {
-//                DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
-//
-//                categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.exists()) {
-//                            for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
-//                                // Delete all categories
-//                                categorySnapshot.getRef().removeValue();
-//                            }
-//                            Toast.makeText(requireContext(), "All categories deleted successfully!", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(requireContext(), "No categories found", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Toast.makeText(requireContext(), "Error deleting categories!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            });
-//
-//            secondConfirmationBuilder.setNegativeButton("Cancel", (secondDialog, secondWhich) -> secondDialog.dismiss());
-//
-//            secondConfirmationBuilder.show();
-//
-//            firstDialog.dismiss();
-//        });
-//
-//        firstConfirmationBuilder.setNegativeButton("Cancel", (firstDialog, firstWhich) -> firstDialog.dismiss());
-//
-//        firstConfirmationBuilder.show();
-//    }
-
-    // ...
-
-    //start edit
     private void deleteAllCategoriesAndItems() {
         DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("categories");
 

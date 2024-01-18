@@ -202,27 +202,36 @@ public class InventoryFragment extends Fragment {
     }
 
     private void updateItem(Item item, String editedName, String editedQuantity, String editedExpiryDate) {
-        // Check if the input fields are not empty
-        if (editedName.isEmpty() || editedQuantity.isEmpty() || editedExpiryDate.isEmpty()) {
-            Toast.makeText(requireContext(), "Please provide all the required information", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
 
-        DatabaseReference itemRef = databaseReference.child(item.getBarcode());
+        // Check if the item exists
+        itemsRef.orderByChild("barcode").equalTo(item.getBarcode()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                        // Update the item properties
+                        itemSnapshot.getRef().child("name").setValue(editedName);
+                        itemSnapshot.getRef().child("quantity").setValue(editedQuantity);
+                        itemSnapshot.getRef().child("expiryDate").setValue(editedExpiryDate);
 
-        item.setName(editedName);
-        item.setQuantity(editedQuantity);
-        item.setExpiryDate(editedExpiryDate);
+                        // Notify the user about the successful update
+                        Toast.makeText(requireContext(), "Item updated successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Item not found for updating", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        itemRef.setValue(item)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(requireContext(), "Item updated successfully!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to update item!", Toast.LENGTH_SHORT).show();
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(requireContext(), "Error updating item!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+
+    // start edit
 
     private void deleteItemsForCategory(String selectedCategory, String barcode) {
         DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
@@ -319,53 +328,5 @@ public class InventoryFragment extends Fragment {
             }
         });
     }
-
-//    private void deleteAllItemsForCategory(String selectedCategory) {
-//        // First confirmation dialog
-//        AlertDialog.Builder firstConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//        firstConfirmationBuilder.setTitle("Confirmation");
-//        firstConfirmationBuilder.setMessage("This will delete all items in the category: " + selectedCategory + ". Proceed?");
-//
-//        firstConfirmationBuilder.setPositiveButton("Yes", (firstDialog, firstWhich) -> {
-//            // Second confirmation dialog
-//            AlertDialog.Builder secondConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//            secondConfirmationBuilder.setTitle("Confirm Deletion");
-//            secondConfirmationBuilder.setMessage("Are you sure you want to proceed? This cannot be undone.");
-//
-//            secondConfirmationBuilder.setPositiveButton("Delete", (secondDialog, secondWhich) -> {
-//                DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
-//
-//                itemsRef.orderByChild("category").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.exists()) {
-//                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-//                                // Delete all items with the selected category
-//                                itemSnapshot.getRef().removeValue();
-//                            }
-//                            Toast.makeText(requireContext(), "All items with category " + selectedCategory + " deleted successfully!", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(requireContext(), "No items found for the selected category", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Toast.makeText(requireContext(), "Error deleting items!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            });
-//
-//            secondConfirmationBuilder.setNegativeButton("Cancel", (secondDialog, secondWhich) -> secondDialog.dismiss());
-//
-//            secondConfirmationBuilder.show();
-//
-//            firstDialog.dismiss();
-//        });
-//
-//        firstConfirmationBuilder.setNegativeButton("Cancel", (firstDialog, firstWhich) -> firstDialog.dismiss());
-//
-//        firstConfirmationBuilder.show();
-//    }
 
 }

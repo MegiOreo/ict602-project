@@ -13,6 +13,11 @@
         tools:ignore="MissingConstraints">
 
         <TextView
+            android:id="@+id/categoryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
             android:id="@+id/dateAddedTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

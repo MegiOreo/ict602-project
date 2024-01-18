@@ -1,19 +1,15 @@
-<!-- fragment_developers_details.xml -->
-
-<!-- fragment_developers_details.xml -->
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/lavender">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
         android:background="#E7E3FF">
 
-        <!-- Developer 1 Details -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,47 +24,67 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:padding="16dp">
+            android:padding="16dp"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="4dp"
+                android:background="#C2C7F1">
 
-                <TextView
-                    android:id="@+id/developer1_name"
+                <!-- Developer 1 Image (added) -->
+                <ImageView
+                    android:id="@+id/developer1_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/kimi"
+                    android:layout_marginRight="8dp" />
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name: John Doe"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer1_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name: Dev1"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/developer1_student_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Student ID: 12345"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer1_student_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student ID: 12345"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/developer1_class_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Class Group: A"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
+
+                    <TextView
+                        android:id="@+id/developer1_class_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Class Group: A"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -83,43 +99,60 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="4dp"
+                android:background="#C2C7F1">
 
-                <TextView
-                    android:id="@+id/developer2_name"
+                <!-- Developer 2 Image (added) -->
+                <ImageView
+                    android:id="@+id/developer2_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/fabian"
+                    android:layout_marginRight="8dp" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name: Jane Smith"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer2_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name: Dev2"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/developer2_student_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Student ID: 67890"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer2_student_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student ID: 523423"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/developer2_class_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Class Group: B"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
+
+                    <TextView
+                        android:id="@+id/developer2_class_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Class Group: B"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -134,43 +167,60 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="4dp"
+                android:background="#C2C7F1">
 
-                <TextView
-                    android:id="@+id/developer3_name"
+                <!-- Developer 3 Image (added) -->
+                <ImageView
+                    android:id="@+id/developer3_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/alif"
+                    android:layout_marginRight="8dp" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name: Bob Johnson"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer3_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name: Dev3"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/developer3_student_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Student ID: 54321"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer3_student_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student ID: 54321"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/developer3_class_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Class Group: A"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
+
+                    <TextView
+                        android:id="@+id/developer3_class_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Class Group: A"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -185,42 +235,60 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="4dp"
+                android:background="#C2C7F1">
 
-                <TextView
-                    android:id="@+id/developer4_name"
+                <!-- Developer 4 Image (added) -->
+                <ImageView
+                    android:id="@+id/developer4_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/shafiq"
+                    android:layout_marginRight="8dp" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name: Alice Williams"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer4_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name: Dev4"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/developer4_student_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Student ID: 98765"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#DDDDDD" />
+                    <TextView
+                        android:id="@+id/developer4_student_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student ID: 98765"
+                        android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/developer4_class_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Class Group: B"
-                    android:textSize="16sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#DDDDDD" />
+
+                    <TextView
+                        android:id="@+id/developer4_class_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Class Group: B"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -230,7 +298,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="8dp"
             android:onClick="onEzInventoryInfoClick"
             android:text="EzInventory Info"
             android:textSize="18sp"
@@ -242,9 +310,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"> <!-- Initially set to gone -->
+            android:visibility="gone">
 
-            <!-- App Details (add your information here) -->
             <TextView
                 android:id="@+id/app_version"
                 android:layout_width="match_parent"
@@ -255,10 +322,37 @@
                 android:id="@+id/app_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Description: This application is developed for ICT602 Group Project that involved total of 4 developers.
-                This application purpose is for shop, mart, or any that have similar purpose to store their items." />
+                android:text="Description: This application is developed for ICT602 Group Project that involved total of 4 developers. \nThis application purpose is for shop, mart, or any that have similar purpose to store their  data." />
 
-            <!-- Add more details as needed -->
+        </LinearLayout>
+
+        <!-- EzInventory Features Info TextView (added) -->
+        <TextView
+            android:id="@+id/ez_inventory_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            android:onClick="onFeaturesClick"
+            android:text="Features"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- App Details Container -->
+        <LinearLayout
+            android:id="@+id/features_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"> <!-- Initially set to gone -->
+
+            <TextView
+                android:id="@+id/features_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="*Add Item data(barcode scanner included) \n*Search items \n*Sort items by category \n*List items stored " />
+
+
 
         </LinearLayout>
 
