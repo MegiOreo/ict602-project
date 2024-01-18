@@ -15,7 +15,7 @@
             android:id="@+id/spinnerCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:prompt="@string/select_category" />
+            android:background="@color/Background"/>
 
         <!-- EditText for Name -->
         <EditText
@@ -43,9 +43,11 @@
         <!-- Button to Scan Barcode -->
         <Button
             android:id="@+id/btnScanBarcode"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/baseline_photo_camera_24" />
+            android:drawableLeft="@drawable/baseline_photo_camera_24"
+            android:drawableTint="#FFFFFF"
+            android:textColorLink="#6750A3" />
 
 
         <!-- DatePicker for Expired Date -->
