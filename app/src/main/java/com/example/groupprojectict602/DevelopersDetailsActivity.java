@@ -65,8 +65,7 @@ public class DevelopersDetailsActivity extends AppCompatActivity {
         visitWebsiteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Replace "https://www.example.com" with your actual website URL
-                String websiteUrl = "https://stackoverflow.com/questions/15526805/two-main-activities-in-androidmanifest-xml";
+                String websiteUrl = "https://github.com/MegiOreo/Inventory-App-ICT602";
 
                 // Create an implicit intent to open a web browser
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl));
@@ -100,4 +99,15 @@ public class DevelopersDetailsActivity extends AppCompatActivity {
             appDetailsLayout.setVisibility(View.VISIBLE);
         }
     }
+
+    public void onFeaturesClick(View view) {
+        // Toggle visibility of app details when EzInventory Info is clicked
+        LinearLayout featuresDetailsLayout = findViewById(R.id.features_details_layout);
+        if (featuresDetailsLayout.getVisibility() == View.VISIBLE) {
+            featuresDetailsLayout.setVisibility(View.GONE);
+        } else {
+            featuresDetailsLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
 }

@@ -22,17 +22,6 @@ public class Item {
         this.dateAdded = dateAdded;
         this.barcode = barcode; // Initialize barcode
     }
-
-    // Getter for id
-//    public String getId() {
-//        return id;
-//    }
-
-    // Setter for id
-//    public void setId(String id) {
-//        this.id = id;
-//    }
-
     // Getter for category
     public String getCategory() {
         return category;
@@ -75,10 +64,6 @@ public class Item {
 
     // Getter for dateadded
     public String getDateAdded() {
-        // Extract and return the timestamp from the dateAdded field
-        // For example, if dateAdded is in the format "timestamp:someValue", extract the timestamp part
-        // Return the timestamp or the entire dateAdded depending on your requirements
-        // This is a simplified example; you might need to adjust it based on your actual data structure
         if (dateAdded != null && dateAdded.contains("timestamp:")) {
             return dateAdded.split(":")[1]; // Assuming the format is "timestamp:value"
         }
