@@ -3,12 +3,14 @@ package com.example.groupprojectict602;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
@@ -23,8 +25,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class InventoryFragment extends Fragment {
@@ -179,27 +185,59 @@ public class InventoryFragment extends Fragment {
 
         EditText editName = editItemView.findViewById(R.id.editTextName);
         EditText editQuantity = editItemView.findViewById(R.id.editTextQuantity);
-        EditText editExpiryDate = editItemView.findViewById(R.id.editTextExpiryDate);
+        DatePicker datePickerExpiryDate = editItemView.findViewById(R.id.datePickerExpiryDate);
 
         // Set the current values
         editName.setText(item.getName());
         editQuantity.setText(item.getQuantity());
-        editExpiryDate.setText(item.getExpiryDate());
+
+        // Set the current expiry date values
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+        try {
+            calendar.setTime(sdf.parse(item.getExpiryDate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        datePickerExpiryDate.init(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                null
+        );
 
         builder.setPositiveButton("Save", (dialog, which) -> {
             // Get the edited values
             String editedName = editName.getText().toString().trim();
             String editedQuantity = editQuantity.getText().toString().trim();
-            String editedExpiryDate = editExpiryDate.getText().toString().trim();
 
-            // Update the item in the database
-            updateItem(item, editedName, editedQuantity, editedExpiryDate);
+            // Extract the edited expiry date from DatePicker
+            int selectedYear = datePickerExpiryDate.getYear();
+            int selectedMonth = datePickerExpiryDate.getMonth();
+            int selectedDay = datePickerExpiryDate.getDayOfMonth();
+
+            Calendar editedCalendar = Calendar.getInstance();
+            editedCalendar.set(selectedYear, selectedMonth, selectedDay);
+
+            // Format the Calendar to a String if needed
+            SimpleDateFormat editedSdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            String editedExpiryDate = editedSdf.format(editedCalendar.getTime());
+
+            // Check if any field is blank
+            if (TextUtils.isEmpty(editedName) || TextUtils.isEmpty(editedQuantity)) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            } else {
+                // Update the item in the database
+                updateItem(item, editedName, editedQuantity, editedExpiryDate);
+            }
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
+
 
     private void updateItem(Item item, String editedName, String editedQuantity, String editedExpiryDate) {
         DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
