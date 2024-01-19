@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/lavender"
+    android:background="#E7E3FF"
     tools:context=".CategoryFragment">
 
     <!-- Top App Bar -->
@@ -49,6 +49,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- Delete Button -->
         <TextView
             android:id="@+id/categoryCount"
             android:layout_width="wrap_content"
@@ -57,7 +58,6 @@
             android:text="0 Category Available"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        <!-- Delete Button -->
         <Button
             android:id="@+id/deleteAllCategoriesButton"
             android:layout_width="wrap_content"
@@ -70,12 +70,14 @@
     <ListView
         android:id="@+id/categoryListView"
         android:layout_width="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
-        android:padding="8dp"
+        android:background="#FAFAFA"
         android:clipToPadding="false"
+        android:divider="#E7E3FF"
+        android:dividerHeight="1dp"
         android:scrollbars="vertical" />
 
 </LinearLayout>
