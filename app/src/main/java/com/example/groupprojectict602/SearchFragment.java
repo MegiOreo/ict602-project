@@ -1,19 +1,17 @@
 package com.example.groupprojectict602;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,55 +19,38 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+//start edit
 public class SearchFragment extends Fragment {
-    FloatingActionButton fab;
+
     DatabaseReference databaseReference;
     ValueEventListener eventListener;
-    RecyclerView recyclerView;
+    ExpandableListView expandableListView;
     List<Item> itemList;
-    ItemAdapter adapter;
+    CustomExpandableSearch customExpandableSearch;
     SearchView searchView;
 
-    private Button scanBarcodeButton;
+    private Set<String> uniqueItemKeys = new HashSet<>();
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        recyclerView = rootView.findViewById(R.id.recyclerView);
+        expandableListView = rootView.findViewById(R.id.expandableListView);
         searchView = rootView.findViewById(R.id.search);
         searchView.clearFocus();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        itemList = new ArrayList<>();  // Initialize itemList as an empty list
 
-        itemList = new ArrayList<>();
-
-        adapter = new ItemAdapter(getActivity(), itemList);
-        recyclerView.setAdapter(adapter);
+        customExpandableSearch = new CustomExpandableSearch(getActivity(), itemList);
+        expandableListView.setAdapter(customExpandableSearch);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("items");
-
-        itemList.clear(); // Clear existing items if any
-        eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                itemList.clear();
-                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
-                    Item item = itemSnapshot.getValue(Item.class);
-                    itemList.add(item);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
-            }
-        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -88,15 +69,41 @@ public class SearchFragment extends Fragment {
     }
 
     public void searchList(String text) {
-        if (itemList != null) {
-            ArrayList<Item> searchList = new ArrayList<>();
-            for (Item item : itemList) {
-                if ((item.getBarcode() != null && item.getBarcode().toLowerCase().contains(text.toLowerCase())) ||
-                        (item.getName() != null && item.getName().toLowerCase().contains(text.toLowerCase()))) {
-                    searchList.add(item);
+        itemList.clear();  // Clear existing items
+        uniqueItemKeys.clear(); // Clear existing keys
+
+        if (!text.isEmpty()) {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                        Item item = itemSnapshot.getValue(Item.class);
+                        if (item != null &&
+                                ((item.getBarcode() != null && item.getBarcode().toLowerCase().contains(text.toLowerCase())) ||
+                                        (item.getName() != null && item.getName().toLowerCase().contains(text.toLowerCase())))) {
+
+                            String itemKey = itemSnapshot.getKey();
+
+                            // Check if the item key is unique before adding
+                            if (uniqueItemKeys.add(itemKey)) {
+                                itemList.add(item);
+                                Log.d("SearchFragment", "Added item with key: " + itemKey);
+                            }
+                        }
+                    }
+                    customExpandableSearch.notifyDataSetChanged();
+                    Log.d("SearchFragment", "Number of items after search: " + itemList.size());
                 }
-            }
-            adapter.searchDataList(searchList);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("SearchFragment", "Database error: " + error.getMessage());
+                    // Handle error
+                }
+            });
+        } else {
+            customExpandableSearch.notifyDataSetChanged();
+            Log.d("SearchFragment", "Number of items after empty search: " + itemList.size());
         }
     }
 

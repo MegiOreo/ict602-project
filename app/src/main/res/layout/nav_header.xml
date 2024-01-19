@@ -10,7 +10,7 @@
         android:id="@+id/header_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:src="@mipmap/ic_launcher_foreground"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
@@ -34,7 +34,5 @@
         android:textSize="14sp"
         android:layout_below="@id/header_name"
         android:layout_marginStart="20dp"/>
-
-    <!-- Add your header content here, e.g., logo, app name, etc. -->
 
 </LinearLayout>

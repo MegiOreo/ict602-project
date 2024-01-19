@@ -3,12 +3,14 @@ package com.example.groupprojectict602;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Spinner;
@@ -23,8 +25,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class InventoryFragment extends Fragment {
@@ -179,21 +185,52 @@ public class InventoryFragment extends Fragment {
 
         EditText editName = editItemView.findViewById(R.id.editTextName);
         EditText editQuantity = editItemView.findViewById(R.id.editTextQuantity);
-        EditText editExpiryDate = editItemView.findViewById(R.id.editTextExpiryDate);
+        DatePicker datePickerExpiryDate = editItemView.findViewById(R.id.datePickerExpiryDate);
 
         // Set the current values
         editName.setText(item.getName());
         editQuantity.setText(item.getQuantity());
-        editExpiryDate.setText(item.getExpiryDate());
+
+        // Set the current expiry date values
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+        try {
+            calendar.setTime(sdf.parse(item.getExpiryDate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        datePickerExpiryDate.init(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                null
+        );
 
         builder.setPositiveButton("Save", (dialog, which) -> {
             // Get the edited values
             String editedName = editName.getText().toString().trim();
             String editedQuantity = editQuantity.getText().toString().trim();
-            String editedExpiryDate = editExpiryDate.getText().toString().trim();
 
-            // Update the item in the database
-            updateItem(item, editedName, editedQuantity, editedExpiryDate);
+            // Extract the edited expiry date from DatePicker
+            int selectedYear = datePickerExpiryDate.getYear();
+            int selectedMonth = datePickerExpiryDate.getMonth();
+            int selectedDay = datePickerExpiryDate.getDayOfMonth();
+
+            Calendar editedCalendar = Calendar.getInstance();
+            editedCalendar.set(selectedYear, selectedMonth, selectedDay);
+
+            // Format the Calendar to a String if needed
+            SimpleDateFormat editedSdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            String editedExpiryDate = editedSdf.format(editedCalendar.getTime());
+
+            // Check if any field is blank
+            if (TextUtils.isEmpty(editedName) || TextUtils.isEmpty(editedQuantity)) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            } else {
+                // Update the item in the database
+                updateItem(item, editedName, editedQuantity, editedExpiryDate);
+            }
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -201,28 +238,38 @@ public class InventoryFragment extends Fragment {
         builder.show();
     }
 
+
     private void updateItem(Item item, String editedName, String editedQuantity, String editedExpiryDate) {
-        // Check if the input fields are not empty
-        if (editedName.isEmpty() || editedQuantity.isEmpty() || editedExpiryDate.isEmpty()) {
-            Toast.makeText(requireContext(), "Please provide all the required information", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
 
-        DatabaseReference itemRef = databaseReference.child(item.getBarcode());
+        // Check if the item exists
+        itemsRef.orderByChild("barcode").equalTo(item.getBarcode()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                        // Update the item properties
+                        itemSnapshot.getRef().child("name").setValue(editedName);
+                        itemSnapshot.getRef().child("quantity").setValue(editedQuantity);
+                        itemSnapshot.getRef().child("expiryDate").setValue(editedExpiryDate);
 
-        item.setName(editedName);
-        item.setQuantity(editedQuantity);
-        item.setExpiryDate(editedExpiryDate);
+                        // Notify the user about the successful update
+                        Toast.makeText(requireContext(), "Item updated successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Item not found for updating", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        itemRef.setValue(item)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(requireContext(), "Item updated successfully!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to update item!", Toast.LENGTH_SHORT).show();
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(requireContext(), "Error updating item!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+
+    // start edit
 
     private void deleteItemsForCategory(String selectedCategory, String barcode) {
         DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
@@ -319,53 +366,5 @@ public class InventoryFragment extends Fragment {
             }
         });
     }
-
-//    private void deleteAllItemsForCategory(String selectedCategory) {
-//        // First confirmation dialog
-//        AlertDialog.Builder firstConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//        firstConfirmationBuilder.setTitle("Confirmation");
-//        firstConfirmationBuilder.setMessage("This will delete all items in the category: " + selectedCategory + ". Proceed?");
-//
-//        firstConfirmationBuilder.setPositiveButton("Yes", (firstDialog, firstWhich) -> {
-//            // Second confirmation dialog
-//            AlertDialog.Builder secondConfirmationBuilder = new AlertDialog.Builder(requireContext());
-//            secondConfirmationBuilder.setTitle("Confirm Deletion");
-//            secondConfirmationBuilder.setMessage("Are you sure you want to proceed? This cannot be undone.");
-//
-//            secondConfirmationBuilder.setPositiveButton("Delete", (secondDialog, secondWhich) -> {
-//                DatabaseReference itemsRef = FirebaseDatabase.getInstance().getReference().child("items");
-//
-//                itemsRef.orderByChild("category").equalTo(selectedCategory).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.exists()) {
-//                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-//                                // Delete all items with the selected category
-//                                itemSnapshot.getRef().removeValue();
-//                            }
-//                            Toast.makeText(requireContext(), "All items with category " + selectedCategory + " deleted successfully!", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(requireContext(), "No items found for the selected category", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Toast.makeText(requireContext(), "Error deleting items!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            });
-//
-//            secondConfirmationBuilder.setNegativeButton("Cancel", (secondDialog, secondWhich) -> secondDialog.dismiss());
-//
-//            secondConfirmationBuilder.show();
-//
-//            firstDialog.dismiss();
-//        });
-//
-//        firstConfirmationBuilder.setNegativeButton("Cancel", (firstDialog, firstWhich) -> firstDialog.dismiss());
-//
-//        firstConfirmationBuilder.show();
-//    }
 
 }

@@ -19,8 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary">
-
-            <!-- Your title if needed -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,32 +40,23 @@
         app:iconifiedByDefault="false"
         app:queryHint="Search items..."
         android:focusable="false"
-        app:closeIcon="@drawable/baseline_clear_24"/>
+        app:closeIcon="@drawable/baseline_clear_24"
+        android:background="@drawable/search_view_bg"/>
 
-    <!-- Button for Barcode Scanning
-    <Button
-        android:id="@+id/scanBarcodeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Scan Barcode"
-        android:layout_marginTop="16dp"/>-->
-
-    <!-- Results Section with padding -->
-    <LinearLayout
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingStart="16dp"
         android:paddingTop="10dp"
         android:paddingEnd="12dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FAFAFA"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp" />
+    <!-- Results Section -->
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search"
+        android:background="#FAFAFA" />
     </LinearLayout>
 
 </LinearLayout>

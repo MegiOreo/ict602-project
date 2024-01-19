@@ -164,7 +164,6 @@ public class HomeFragment extends Fragment {
 
                 // Sort the items based on the dateAdded in descending order
                 Collections.sort(items, (item1, item2) -> {
-                    // Assuming dateAdded is stored in the format "hh:mm a, dd MMMM yyyy"
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, dd MMMM yyyy", Locale.getDefault());
                     try {
                         Date date1 = sdf.parse(item1.getDateAdded());
