@@ -43,13 +43,23 @@
         app:queryHint="Search items..."
         android:focusable="false"
         app:closeIcon="@drawable/baseline_clear_24"
-        android:background="@drawable/search_view_bg"/>
+        android:background="@drawable/search_view_bg"
+        android:layout_marginStart="16dp"/>
 
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp">
     <!-- Results Section -->
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search" />
+        android:layout_below="@id/search"
+        android:background="#FAFAFA" />
+    </LinearLayout>
 
 </LinearLayout>

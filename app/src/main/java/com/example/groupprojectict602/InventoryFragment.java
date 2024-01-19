@@ -120,12 +120,22 @@ public class InventoryFragment extends Fragment {
         databaseReference.orderByChild("category").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!isAdded()) {
+                    // Fragment is not attached, do nothing
+                    return;
+                }
+
                 List<Item> items = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Item item = snapshot.getValue(Item.class);
                     if (item != null) {
                         items.add(item);
                     }
+                }
+
+                if (!isAdded()) {
+                    // Fragment is not attached, do nothing
+                    return;
                 }
 
                 customExpandableListAdapter = new CustomExpandableListAdapter(getContext(), items);
@@ -140,10 +150,15 @@ public class InventoryFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors
+                if (isAdded()) {
+                    // Handle errors only if the fragment is still attached
+                    // You might want to show an error message to the user
+                    Toast.makeText(requireContext(), "Error fetching items: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
 
     private void showOptionsDialog(Item item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
