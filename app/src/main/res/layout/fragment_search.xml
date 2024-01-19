@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#E7E3FF"
+    android:background="@color/lavender"
     android:orientation="vertical">
 
     <!-- Top Bar -->
@@ -31,10 +31,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- TextView below the Toolbar -->
+
     <androidx.appcompat.widget.SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         android:id="@+id/search"
         app:iconifiedByDefault="false"

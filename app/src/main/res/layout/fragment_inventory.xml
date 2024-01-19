@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#E7E3FF">
+    android:orientation="vertical">
 
     <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -32,10 +31,11 @@
         android:id="@+id/deleteAllButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete All"
+        android:text="Delete All items"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp" />
+
 
     <!-- Dropdown to select category -->
     <Spinner
